@@ -2,15 +2,19 @@ package org.launchcode.controllers;
 
 import javax.servlet.http.HttpServletRequest; // gets data from http requests (ie. headers, queries)
 
-import org.launchcode.models.HelloMessage;
+import org.launchcode.models.HelloLog;
+import org.launchcode.models.dao.HelloLogDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller // tell Spring this class as a controller (similar to component)
 public class HelloController {
+	
+	@Autowired // injects instance of interface listed below
+	private HelloLogDao helloLogDao;
 	
 	@RequestMapping(value = "/hello", method = RequestMethod.GET)
 	public String helloForm() {
@@ -26,6 +30,9 @@ public class HelloController {
 		if (name == null || name == "") {
 			name = "World";
 		}
+		
+		HelloLog log = new HelloLog(name);
+		helloLogDao.save(log);
 
 		String language = request.getParameter("language");
 		String hello;
