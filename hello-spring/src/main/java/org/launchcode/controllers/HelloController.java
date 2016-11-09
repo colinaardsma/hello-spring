@@ -1,5 +1,7 @@
 package org.launchcode.controllers;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest; // gets data from http requests (ie. headers, queries)
 
 import org.launchcode.models.HelloLog;
@@ -32,7 +34,7 @@ public class HelloController {
 		}
 		
 		HelloLog log = new HelloLog(name);
-		helloLogDao.save(log);
+		helloLogDao.save(log); // saves log to db
 
 		String language = request.getParameter("language");
 		String hello;
@@ -50,11 +52,22 @@ public class HelloController {
 			break;
 		}
 			
-		
 		model.addAttribute("name", name); // make "message" variable, give it the value of HelloMessage.getMessage(name), and pass it into thymeleaf template as dictated below
 		model.addAttribute("title", "Hello, Spring! Response");
 		model.addAttribute("hello", hello);
 		return "hello"; // name of template file without .html (if in different folder list as folder/hello)
+	}
+	
+	@RequestMapping(value = "/log")
+	public String log(Model model) {
+		
+		//get data out of db
+		List<HelloLog> logs = helloLogDao.findAll();
+		
+		//put db into template
+		model.addAttribute("logs", logs);
+		
+		return"log";
 	}
 	
 }
